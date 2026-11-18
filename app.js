@@ -285,4 +285,12 @@
   }
 
   main();
+
+  // Register the service worker so the app installs and works offline.
+  // Browsers allow this only on https (GitHub Pages) or localhost.
+  if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').catch(err => console.warn('Service worker not registered:', err));
+    });
+  }
 })();
