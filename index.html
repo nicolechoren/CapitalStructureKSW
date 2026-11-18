@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AGE Capital Structure</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <h1>AGE Capital Structure</h1>
+    <p class="sub">Campus Deli and Sub Shop (CDSS) · FIN 4150</p>
+  </header>
+
+  <main>
+    <div id="status" class="status" role="status">Loading data…</div>
+    <div id="warnings"></div>
+
+    <section id="firms" hidden>
+      <h2>Firm U and Firm L <span class="tag">question c</span></h2>
+      <p class="note" id="firms-intro"></p>
+      <div class="firm-grid">
+        <div>
+          <h3>Firm U <span class="muted" id="firm-u-debt"></span></h3>
+          <table class="firm" id="firm-u"></table>
+        </div>
+        <div>
+          <h3>Firm L <span class="muted" id="firm-l-debt"></span></h3>
+          <table class="firm" id="firm-l"></table>
+        </div>
+      </div>
+      <h3>Return and risk</h3>
+      <table class="firm stats" id="firm-stats"></table>
+    </section>
+
+    <section id="cdss" hidden>
+      <h2>CDSS at each amount of borrowing <span class="tag">question d</span></h2>
+      <div id="cdss-inputs" class="inputs"></div>
+
+      <h3>Case method: buy back at today's <span class="p0"></span> <span class="tag">d(3), d(4), d(7)</span></h3>
+      <p class="note">Shares repurchased = D / P₀. EPS = net income / shares remaining. Price = EPS / r<sub>s</sub>. WACC uses book weights: D/A × r<sub>d</sub>(1 − T) + (A − D)/A × r<sub>s</sub>.</p>
+      <table class="schedule" id="case-table"></table>
+
+      <h3>New-price method: buy back at the price after the announcement</h3>
+      <p class="note">Equity S = net income / r<sub>s</sub>. Firm V = S + D. Price = V / n. Shares repurchased = D / price. WACC uses market weights: D/V × r<sub>d</sub>(1 − T) + S/V × r<sub>s</sub>.</p>
+      <table class="schedule" id="new-table"></table>
+
+      <div id="cdss-summary" class="summary"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Every figure comes from the files in <code>data/</code>. Nothing leaves your device.</p>
+  </footer>
+
+  <script src="capstruct.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
