@@ -19,6 +19,17 @@
     <section id="firms" hidden>
       <h2>Firm U and Firm L <span class="tag">question c</span></h2>
       <p class="note" id="firms-intro"></p>
+
+      <div class="lever-box">
+        <label for="firm-l-slider" class="lever-label">Firm L's debt: <strong id="firm-l-value"></strong></label>
+        <div class="slider-row">
+          <input type="range" id="firm-l-slider">
+          <button type="button" id="btn-case" class="btn">Case</button>
+        </div>
+        <div class="ticks" id="firm-l-ticks" aria-hidden="true"></div>
+        <p class="note" id="firm-l-rate-note"></p>
+      </div>
+
       <div class="firm-grid">
         <div>
           <h3>Firm U <span class="muted" id="firm-u-debt"></span></h3>
@@ -36,6 +47,20 @@
     <section id="cdss" hidden>
       <h2>CDSS at each amount of borrowing <span class="tag">question d</span></h2>
       <div id="cdss-inputs" class="inputs"></div>
+
+      <div class="lever-box">
+        <label for="cdss-slider" class="lever-label">CDSS's debt: <strong id="cdss-value"></strong></label>
+        <input type="range" id="cdss-slider" min="0" step="1">
+        <div class="ticks" id="cdss-ticks" aria-hidden="true"></div>
+        <p class="note">The slider stops only at the banker's amounts. r<sub>d</sub> = <span id="cdss-rd"></span>, r<sub>s</sub> = <span id="cdss-rs"></span></p>
+        <div class="btn-row">
+          <button type="button" id="btn-best-price" class="btn">Best price</button>
+          <button type="button" id="btn-highest-eps" class="btn">Highest EPS</button>
+        </div>
+        <p id="lever-note" class="lever-note" hidden></p>
+        <table class="lever" id="cdss-lever"></table>
+        <div id="lever-mgmt-note"></div>
+      </div>
 
       <h3>Case method: buy back at today's <span class="p0"></span> <span class="tag">d(3), d(4), d(7)</span></h3>
       <p class="note">Shares repurchased = D / P₀. EPS = net income / shares remaining. Price = EPS / r<sub>s</sub>. WACC uses book weights: D/A × r<sub>d</sub>(1 − T) + (A − D)/A × r<sub>s</sub>.</p>

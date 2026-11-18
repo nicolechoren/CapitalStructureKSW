@@ -128,13 +128,33 @@
     return cdss.sales * (1 - cdss.variable_cost_rate) - cdss.fixed_costs;
   }
 
+  // Management's stake after a buyback (management doesn't sell).
+  // status: 'ok' (stake is a number), 'all' (every outside share bought: 100%),
+  // or 'sell' (the buyback needs more shares than outsiders own).
+  function managementStake(managementShare, n, repurchased) {
+    const outside = (1 - managementShare) * n;
+    if (Math.abs(repurchased - outside) <= 1e-9 * n) return { stake: 1, status: 'all' };
+    if (repurchased > outside) return { stake: null, status: 'sell' };
+    return { stake: (managementShare * n) / (n - repurchased), status: 'ok' };
+  }
+
+  // Where the Best price / Highest EPS buttons send the CDSS debt slider.
+  // If the two buyback methods disagree, go to the case method's amount.
+  function leverTarget(summary, kind) {
+    const caseDebt = kind === 'price' ? summary.bestPriceCase : summary.highestEpsCase;
+    const newDebt = kind === 'price' ? summary.bestPriceNew : summary.highestEpsNew;
+    return { debt: caseDebt, caseDebt, newDebt, agree: caseDebt === newDebt };
+  }
+
   // One amount of borrowing, both buyback methods.
-  // row: {debt, cost_of_debt, cost_of_equity}; ctx: {ebit, taxRate, shares, price, assets}
+  // row: {debt, cost_of_debt, cost_of_equity}
+  // ctx: {ebit, taxRate, shares, price, assets, managementShare}
   function cdssAtDebt(row, ctx) {
     const D = row.debt;
     const rd = row.cost_of_debt;
     const rs = row.cost_of_equity;
     const { ebit, taxRate: T, shares: n, price: P0, assets: A } = ctx;
+    const m = ctx.managementShare;
     if (D > 0 && (rd === null || isNaN(rd))) {
       throw new Error('The banker\'s schedule has no cost of debt at $' + D + '.');
     }
@@ -167,7 +187,8 @@
         eps: caseEps,
         dps: caseEps, // all earnings paid out
         price: casePrice,
-        wacc: waccBook
+        wacc: waccBook,
+        management: m === undefined ? null : managementStake(m, n, caseRepurchased)
       },
       newPriceMethod: {
         equityValue: S,
@@ -178,6 +199,7 @@
         dps: newEps,
         price: newPrice,
         wacc: waccMarket,
+        management: m === undefined ? null : managementStake(m, n, newRepurchased),
         // Checks from CLAUDE.md
         epsCheck: Math.abs(newEps - rs * newPrice) < 1e-9 * Math.max(1, Math.abs(newEps)),
         waccCheck: Math.abs(waccMarket - ebit * (1 - T) / V) < 1e-12
@@ -207,7 +229,8 @@
       taxRate,
       shares: cdss.shares_outstanding,
       price: cdss.share_price,
-      assets: cdss.total_assets
+      assets: cdss.total_assets,
+      managementShare: cdss.management_share
     };
     const rows = sorted.map(r => cdssAtDebt(r, ctx));
 
@@ -243,7 +266,8 @@
 
   const api = {
     parseCSV, toNumber, keyValue, roundHalfUp, distribution,
-    leverageExample, cdssEbit, cdssAtDebt, cdssAnalysis, bestIndex
+    leverageExample, cdssEbit, cdssAtDebt, cdssAnalysis, bestIndex,
+    managementStake, leverTarget
   };
 
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
